@@ -19,4 +19,4 @@ A simple budget calculator to compare income and expenses
   - To run in debug/development mode: `export FLASK_ENV=development` before you do `flask run`
 
 5: Application should be running in the browser
-  - Navigate to https://localhost:5000 to use the app
+  - Navigate to http://localhost:5000 to use the app
