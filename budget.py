@@ -65,7 +65,7 @@ class Budget:
                 total += item['amount']
             self.e_total = total
     
-    def balance(self):
+    def get_balance(self):
         self.balance = self.i_total - self.e_total
 
     def undo(self):

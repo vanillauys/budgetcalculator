@@ -34,7 +34,7 @@ def index():
 
         user_budget.calculate_weights('income') 
         user_budget.calculate_weights('expenses') 
-        user_budget.balance()
+        user_budget.get_balance()
 
         return render_template('index.html', income=user_budget.income, expenses=user_budget.expenses, i_total=user_budget.i_total, e_total=user_budget.e_total, balance=user_budget.balance)
     else:
