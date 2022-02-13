@@ -16,8 +16,9 @@ class Budget:
     income: list = field(default_factory=list())
     expenses: list = field(default_factory=list())
     last_added: list = field(default_factory=list())
-    i_total: float = 0.0
-    e_total: float = 0.0
+    i_total: int = 0
+    e_total: int = 0
+    balance: int = 0
 
 
     # ---------------------------------------------------------------------------- #
@@ -63,6 +64,9 @@ class Budget:
             for item in self.expenses:
                 total += item['amount']
             self.e_total = total
+    
+    def balance(self):
+        self.balance = self.i_total - self.e_total
 
     def undo(self):
         if len(self.last_added) > 0:
@@ -70,10 +74,13 @@ class Budget:
                 if len(self.income) > 0:
                     self.income.pop(-1)
                     self.last_added.pop(-1)
+                    self.calculate_weights('income')
             else:
                 if len(self.expenses) > 0:
                     self.expenses.pop(-1)
                     self.last_added.pop(-1)
+                    self.calculate_weights('expenses')
+
 
 
 # ---------------------------------------------------------------------------- #
@@ -85,9 +92,6 @@ def main():
     budget = Budget([], [], [], 0, 0)
     budget.add_item('income', 'Allowance', 5049)
     budget.add_item('expenses', 'Virgin Active', 510)
-    budget.add_item('expenses', 'Rain 5G', 500)
-    budget.calculate_total('income')
-    budget.calculate_total('expenses')
     budget.calculate_weights('income')
     budget.calculate_weights('expenses')
     print(budget.income)
@@ -96,13 +100,7 @@ def main():
     print(f'Income total: {budget.i_total}')
     print(f'Expenses total: {budget.e_total}')
     budget.undo()
-    budget.add_item('expenses', 'Rain 5G', 500)
     budget.undo()
-    budget.undo()
-    budget.calculate_total('income')
-    budget.calculate_total('expenses')
-    budget.calculate_weights('income')
-    budget.calculate_weights('expenses')
     print(budget.income)
     print(budget.expenses)
 

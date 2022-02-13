@@ -13,7 +13,7 @@ from budget import Budget
 
 app = Flask(__name__)
 global user_budget
-user_budget = Budget([], [], [], 0, 0)
+user_budget = Budget([], [], [], 0, 0, 0)
 
 @app.route('/', methods=['GET', 'POST'])
 def index(): 
@@ -25,8 +25,8 @@ def index():
             amount = request.form['amount']
             if item_name == '' or amount == '':
                 balance = user_budget.i_total - user_budget.e_total
-                return render_template('index.html', income=user_budget.income, expenses=user_budget.expenses, i_total=user_budget.i_total, e_total=user_budget.e_total, balance=balance)
-            amount = float(amount)
+                return render_template('index.html', income=user_budget.income, expenses=user_budget.expenses, i_total=user_budget.i_total, e_total=user_budget.e_total, balance=user_budget.balance)
+            amount = int(amount)
             if request.form['type'] == 'income':
                 user_budget.add_item('income', item_name, amount)
             else:
@@ -34,10 +34,9 @@ def index():
 
         user_budget.calculate_weights('income') 
         user_budget.calculate_weights('expenses') 
+        user_budget.balance()
 
-        balance = user_budget.i_total - user_budget.e_total
-
-        return render_template('index.html', income=user_budget.income, expenses=user_budget.expenses, i_total=user_budget.i_total, e_total=user_budget.e_total, balance=balance)
+        return render_template('index.html', income=user_budget.income, expenses=user_budget.expenses, i_total=user_budget.i_total, e_total=user_budget.e_total, balance=user_budget.balance)
     else:
         return render_template('index.html', income=[], expenses=[], i_total=0, e_total=0, balance=0)
 
