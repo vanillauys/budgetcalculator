@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta charset="UTF-8">
 <script src="https://cdn.tailwindcss.com"></script>
-<body class="bg-slate-800">
-	{% block content %}
+{% block content %}
+{% if balance >= 0 %}
+<body class="bg-emerald-600">
+{% else %}
+<body class="bg-rose-500">
+{% endif %}
 	<div class="max-w-6xl mx-auto px-4 sm:px-6">
 		<div class="pt-32 pb-12 md:pt-35 md:pb-20">
 			<div class="text-center pb-12 md:pb-16">
@@ -26,7 +30,7 @@
 					<button type="submit" name="action" value="Undo" class="w-1/6 text-2xl align-center text-center text-slate-100 py-2 px-2 me-auto">
 						<ion-icon name="arrow-undo-outline" alt="Undo"></ion-icon>
 					</button>
-					<input class="text-slate-900 ml-3 py-4 px-2 w-4/6 mx-auto" type="text" id="item_name" name="item_name" placeholder="Internet" required>
+					<input class="text-slate-900 ml-3 py-4 px-2 w-4/6 mx-auto" maxlength="32" type="text" id="item_name" name="item_name" placeholder="Internet">
 					<select class="text-slate-900 py-4 px-2 w-1/6 mx-auto" name="type" id="type">
 						<option value="income">+</option>
 						<option value="expense">-</option>
@@ -35,8 +39,12 @@
 
 				<div class="basis-1/3 text-lg text-slate-100 px-5 py-8 flex flex-row">
 					<label class="text-slate-100 px-2 py-4 mx-auto" for="amount">R</label>
-					<input class="text-slate-900 w-3/6 px-2 py-4 mx-auto" type="text" id="amount" name="amount" placeholder="8250.99" required>
-					<input class="text-slate-100 bg-teal-700 hover:bg-teal-500 rounded py-4 px-2 w-2/6 mx-auto" type="submit" value="Add" name="action">
+					<input class="text-slate-900 w-3/6 px-2 py-4 mx-auto" type="number" min="1" max="999999" id="amount" name="amount" placeholder="999 999">
+					{% if balance >= 0%}
+					<input class="text-slate-100 bg-emerald-800 hover:bg-emerald-500 rounded py-4 px-2 w-2/6 mx-auto" type="submit" value="Add" name="action">
+					{% else %}
+					<input class="text-slate-100 bg-rose-800 hover:bg-rose-300 rounded py-4 px-2 w-2/6 mx-auto" type="submit" value="Add" name="action">
+					{% endif %}
 				</div>
 			</div>
 		</form>
@@ -47,10 +55,10 @@
 				<ul>
 					{% for item in income %}
 					<li>
-						<div class="text-md flex flex-row bg-slate-600 text-slate-100">
-							<div class="w-3/5 px-4 py-3">{{item['name']}}</div>
-							<div class="w-1/5 px-4 py-3 text-center">R {{item['amount']}}</div>
-							<div class="w-1/5 px-4 py-3 text-center">{{item['percent']}} %</div>
+						<div class="text-sm flex flex-row bg-emerald-400 text-slate-700">
+							<div class="w-5/12 px-4 py-3"><p class="text-ellipsis">{{item['name']}}</p></div>
+							<div class="w-4/12 px-4 py-3 text-center">R {{item['amount']}}</div>
+							<div class="w-3/12 px-4 py-3 text-center">{{item['percent']}} %</div>
 						</div>
 					</li>
 					{% endfor %}
@@ -61,10 +69,10 @@
 				<ul>
 					{% for item in expenses %}
 					<li>
-						<div class="text-md flex flex-row bg-slate-600 text-slate-100">
-							<div class="w-3/5 px-4 py-3">{{item['name']}}</div>
-							<div class="w-1/5 px-4 py-3 text-center">R {{item['amount']}}</div>
-							<div class="w-1/5 px-4 py-3 text-center">{{item['percent']}} %</div>
+						<div class="truncate text-sm flex flex-row bg-rose-400 text-slate-800">
+							<div class="w-5/12 px-4 py-3"><p class="text-ellipsis">{{item['name']}}</p></div>
+							<div class="w-4/12 px-4 py-3 text-center">R {{item['amount']}}</div>
+							<div class="w-3/12 px-4 py-3 text-center">{{item['percent']}} %</div>
 						</div>
 					</li>
 					{% endfor %}
@@ -73,9 +81,9 @@
 		</div>
 
 	</div>
-	{% endblock %}
 	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 	<!-- <script src=""></script> -->
 </body>
+{% endblock %}
 </html>

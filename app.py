@@ -22,7 +22,11 @@ def index():
             user_budget.undo()
         else:
             item_name = request.form['item_name']
-            amount = float(request.form['amount'])
+            amount = request.form['amount']
+            if item_name == '' or amount == '':
+                balance = user_budget.i_total - user_budget.e_total
+                return render_template('index.html', income=user_budget.income, expenses=user_budget.expenses, i_total=user_budget.i_total, e_total=user_budget.e_total, balance=balance)
+            amount = float(amount)
             if request.form['type'] == 'income':
                 user_budget.add_item('income', item_name, amount)
             else:
