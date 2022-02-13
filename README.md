@@ -1,7 +1,11 @@
 # Budget Calculator
 A simple budget calculator to compare income and expenses
 
-![Budget Calculator - vanillauys](https://i.imgur.com/FA37QrB.png)
+![Budget Calculator - vanillauys](https://i.imgur.com/XDmYv9A.png)
+
+
+![Budget Calculator - vanillauys](https://i.imgur.com/Q5gvuwQ.png)
+
 
 ## To run the app
 
