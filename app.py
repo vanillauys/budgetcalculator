@@ -4,38 +4,38 @@
 
 
 from flask import Flask, render_template, request
-import budget
-
+from budget import Budget
 
 # ---------------------------------------------------------------------------- #
 # -- App Routes -------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
+
 app = Flask(__name__)
-income = []
-expenses = []
-i_total = 0
-e_total = 0
+global user_budget
+user_budget = Budget([], [], [], 0, 0)
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
+def index(): 
     if request.method == 'POST':
-        item_name = request.form['item_name']
-        amount = float(request.form['amount'])
-        if request.form['type'] == 'income':
-            budget.add_item(income, item_name, amount)
+        if request.form['action'] == 'Undo':
+            user_budget.undo()
         else:
-            budget.add_item(expenses, item_name, amount)
+            item_name = request.form['item_name']
+            amount = float(request.form['amount'])
+            if request.form['type'] == 'income':
+                user_budget.add_item('income', item_name, amount)
+            else:
+                user_budget.add_item('expenses', item_name, amount)
 
-        budget.calculate_weights(income) 
-        budget.calculate_weights(expenses) 
+        user_budget.calculate_weights('income') 
+        user_budget.calculate_weights('expenses') 
 
-        i_total = budget.calculate_total(income)
-        e_total = budget.calculate_total(expenses)
+        balance = user_budget.i_total - user_budget.e_total
 
-        return render_template('index.html', income=income, expenses=expenses, i_total=i_total, e_total=e_total)
+        return render_template('index.html', income=user_budget.income, expenses=user_budget.expenses, i_total=user_budget.i_total, e_total=user_budget.e_total, balance=balance)
     else:
-        return render_template('index.html', income=income, expenses=expenses, i_total=0, e_total=0)
+        return render_template('index.html', income=[], expenses=[], i_total=0, e_total=0, balance=0)
 
 
 # ---------------------------------------------------------------------------- #

@@ -3,35 +3,77 @@
 # ---------------------------------------------------------------------------- #
 
 
-#no imports
+from dataclasses import dataclass, field, asdict
 
 
 # ---------------------------------------------------------------------------- #
-# -- Functions --------------------------------------------------------------- #
+# -- Class ------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 
 
-def add_item(data: list, name: str, amount: float):
-    item = {
-        'name': name,
-        'percent': '',
-        'amount': round(amount, 2)
-    }
-    data.append(item)
+@dataclass
+class Budget:
+    income: list = field(default_factory=list())
+    expenses: list = field(default_factory=list())
+    last_added: list = field(default_factory=list())
+    i_total: float = 0.0
+    e_total: float = 0.0
 
 
-def calculate_weights(data: list):
-    total = calculate_total(data)
-
-    for item in data:
-        item['percent'] = round(((item['amount'] / total) * 100), 2)
+    # ---------------------------------------------------------------------------- #
+    # -- Functions --------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------- #
 
 
-def calculate_total(data: list):
-    total = 0
-    for item in data:
-        total += item['amount']
-    return total
+    def add_item(self, category: str, name: str, amount: float):
+        item = {
+            'name': name,
+            'percent': '',
+            'amount': round(amount, 2)
+        }
+        if category == 'income':
+            self.income.append(item)
+            self.last_added.append('income')
+        else:
+            self.expenses.append(item)
+            self.last_added.append('expenses')
+
+
+    def calculate_weights(self, category: str):
+        if category == 'income':
+            self.calculate_total('income')
+            total = self.i_total
+            for item in self.income:
+                item['percent'] = round(((item['amount'] / total) * 100), 2)
+        else:
+            self.calculate_total('expenses')
+            total = self.e_total
+            for item in self.expenses:
+                item['percent'] = round(((item['amount'] / total) * 100), 2)
+
+        
+    def calculate_total(self, category: str):
+        if category == 'income':
+            total = 0
+            for item in self.income:
+                total += item['amount']
+            self.i_total = total
+        else:
+            total = 0
+            for item in self.expenses:
+                total += item['amount']
+            self.e_total = total
+
+    def undo(self):
+        if len(self.last_added) > 0:
+            if self.last_added[-1] == 'income':
+                if len(self.income) > 0:
+                    self.income.pop(-1)
+                    self.last_added.pop(-1)
+            else:
+                if len(self.expenses) > 0:
+                    self.expenses.pop(-1)
+                    self.last_added.pop(-1)
 
 
 # ---------------------------------------------------------------------------- #
@@ -40,8 +82,32 @@ def calculate_total(data: list):
 
 
 def main():
-    print("Nothing happens here...")
+    budget = Budget([], [], [], 0, 0)
+    budget.add_item('income', 'Allowance', 5049)
+    budget.add_item('expenses', 'Virgin Active', 510)
+    budget.add_item('expenses', 'Rain 5G', 500)
+    budget.calculate_total('income')
+    budget.calculate_total('expenses')
+    budget.calculate_weights('income')
+    budget.calculate_weights('expenses')
+    print(budget.income)
+    print(budget.expenses)
 
+    print(f'Income total: {budget.i_total}')
+    print(f'Expenses total: {budget.e_total}')
+    budget.undo()
+    budget.add_item('expenses', 'Rain 5G', 500)
+    budget.undo()
+    budget.undo()
+    budget.calculate_total('income')
+    budget.calculate_total('expenses')
+    budget.calculate_weights('income')
+    budget.calculate_weights('expenses')
+    print(budget.income)
+    print(budget.expenses)
 
-if __name__ == 'main':
+    print(f'Income total: {budget.i_total}')
+    print(f'Expenses total: {budget.e_total}')
+
+if __name__ == '__main__':
     main()
